@@ -1,4 +1,4 @@
-package useraccountmanagement
+package models
 
 type SignupRequest struct {
 	Email    string `json:"email"`

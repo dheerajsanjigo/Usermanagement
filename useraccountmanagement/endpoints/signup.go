@@ -1,4 +1,4 @@
-package useraccountmanagement
+package endpoints
 
 import (
 	"database/sql"
@@ -6,20 +6,14 @@ import (
 	"fmt"
 	"net/http"
 
+	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
-
-type SignupRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	FullName string `json:"fullname"`
-	Username string `json:"username"`
-}
 
 var db *sql.DB
 var err error
 
-func createUser(user SignupRequest) error {
+func createUser(user types.SignupRequest) error {
 	fmt.Println(user)
 	// Create a prepared statement to insert a new user into the database
 	stmt, err := db.Prepare("INSERT INTO users (Email, Password,Username,Fullname) VALUES (?, ?,?,?)")
@@ -37,7 +31,7 @@ func createUser(user SignupRequest) error {
 	return nil
 }
 
-func signupHandler(w http.ResponseWriter, r *http.Request) {
+func SSignupHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if request method is POST
 	if r.Method != http.MethodPost {
 		// If not, throw error
@@ -46,7 +40,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Decode JSON request body into SignupRequest struct
-	var req SignupRequest
+	var req types.SignupRequest
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON request body", http.StatusBadRequest)
 		return

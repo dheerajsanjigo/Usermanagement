@@ -1,17 +1,16 @@
-package useraccountmanagement
+package endpoints
 
 import (
-	
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	""
 
-
-
+	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdateUser(user UpdateRequest) error {
+func UpdateUser(user types.UpdateRequest) error {
 	fmt.Println(user)
 	// Create a prepared statement to update the  user password into the database
 	stmt, err := db.Prepare("UPDATE `users` SET `Password` = ? WHERE `Username` = ?;")
@@ -30,7 +29,7 @@ func UpdateUser(user UpdateRequest) error {
 
 }
 
-func updatePasswordHandler(w http.ResponseWriter, r *http.Request) {
+func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if request method is PUT
 	if r.Method != http.MethodPut {
 		// If not, throw error
@@ -39,7 +38,7 @@ func updatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Decode JSON request body into LoginRequest struct
-	var req UpdateRequest
+	var req types.UpdateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON request body", http.StatusBadRequest)
 		return

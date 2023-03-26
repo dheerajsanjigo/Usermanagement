@@ -1,4 +1,4 @@
-package useraccountmanagement
+package endpoints
 
 import (
 	"database/sql"
@@ -6,14 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
+	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if request method is POST
 	if r.Method != http.MethodPost {
 		// If not, throw error
@@ -22,7 +19,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Decode JSON request body into LoginRequest struct
-	var req LoginRequest
+	var req types.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON request body", http.StatusBadRequest)
 		return
