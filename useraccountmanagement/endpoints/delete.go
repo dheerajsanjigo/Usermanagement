@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func DeleteUser(user string) error {
+func DeleteUser(db *sql.DB, user string) error {
 	fmt.Println(user)
 	// Create a prepared statement to update the  user password into the database
 	stmt, err := db.Prepare("DELETE FROM users WHERE Username= ? ;")
@@ -27,6 +28,7 @@ func DeleteUser(user string) error {
 }
 
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
+	db := dbconnector.Dbconnector()
 	// Check if request method is DELETE
 	if r.Method != http.MethodDelete {
 		// If not, throw error
