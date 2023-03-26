@@ -28,7 +28,8 @@ func DeleteUser(db *sql.DB, user string) error {
 }
 
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
-	db := dbconnector.Dbconnector()
+	db, err := dbconnector.Dbconnector()
+	defer db.Close()
 	// Check if request method is DELETE
 	if r.Method != http.MethodDelete {
 		// If not, throw error

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	dbconnection "github.com/dheerajsanjigo/Usermanagement/dbconnector"
-	endpoints "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/endpoints"
+	endpoints "github.com/dheerajsanjigo/Usermanagement/endpoints"
 )
 
 var err error

@@ -39,7 +39,8 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Post Request", http.StatusBadRequest)
 		return
 	}
-	db := dbconnector.Dbconnector()
+	db, err := dbconnector.Dbconnector()
+	defer db.Close()
 	// Decode JSON request body into SignupRequest struct
 	var req types.SignupRequest
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {

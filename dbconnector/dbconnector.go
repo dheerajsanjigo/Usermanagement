@@ -2,7 +2,6 @@ package dbconnector
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -10,13 +9,12 @@ import (
 const dbname = "mysql"
 const dburl = "root:Krackravi@15@tcp(localhost:3306)/temp"
 
-func Dbconnector() {
+func Dbconnector() (*sql.DB, error) {
 	// Open a database connection
 	db, err := sql.Open(dbname, dburl)
 	if err != nil {
 		panic(err.Error())
 	}
-	defer db.Close()
 
 	// Test the connection
 	err = db.Ping()
@@ -24,5 +22,6 @@ func Dbconnector() {
 		panic(err.Error())
 	}
 
-	fmt.Println("Successfully connected to the database!")
+	return db, nil
+
 }

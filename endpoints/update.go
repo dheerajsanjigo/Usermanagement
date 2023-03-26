@@ -38,8 +38,8 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Put Request", http.StatusBadRequest)
 		return
 	}
-	db := dbconnector.Dbconnector()
-
+	db, err := dbconnector.Dbconnector()
+	defer db.Close()
 	// Decode JSON request body into LoginRequest struct
 	var req types.UpdateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
