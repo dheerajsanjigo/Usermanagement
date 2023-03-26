@@ -9,24 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func DeleteUser(db *sql.DB, user string) error {
-	fmt.Println(user)
-	// Create a prepared statement to update the  user password into the database
-	stmt, err := db.Prepare("DELETE FROM users WHERE Username= ? ;")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	// Execute the prepared statement to update the  user password into the database
-	_, err = stmt.Exec(user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := dbconnector.Dbconnector()
 	defer db.Close()
@@ -50,7 +32,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := DeleteUser(db, userName); err != nil {
+	if err := dbconnector.DeleteUser(db, userName); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

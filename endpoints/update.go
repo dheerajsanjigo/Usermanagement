@@ -12,25 +12,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdateUser(db *sql.DB, user types.User) error {
-	fmt.Println(user)
-	// Create a prepared statement to update the  user password into the database
-	stmt, err := db.Prepare("UPDATE `users` SET `Password` = ? WHERE `Username` = ?;")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	// Execute the prepared statement to update the  user password into the database
-	_, err = stmt.Exec(user.NPassword, user.Username)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
-}
-
 func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if request method is PUT
 	if r.Method != http.MethodPut {
@@ -70,7 +51,7 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//calling the Update function
-	if err := UpdateUser(db, req); err != nil {
+	if err := dbconnector.UpdateUser(db, req); err != nil {
 		http.Error(w, "Invalid  password", http.StatusUnauthorized)
 		return
 	}
