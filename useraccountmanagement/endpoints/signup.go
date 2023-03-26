@@ -32,7 +32,7 @@ func createUser(db *sql.DB, user types.SignupRequest) error {
 	return nil
 }
 
-func SSignupHandler(w http.ResponseWriter, r *http.Request) {
+func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if request method is POST
 	if r.Method != http.MethodPost {
 		// If not, throw error

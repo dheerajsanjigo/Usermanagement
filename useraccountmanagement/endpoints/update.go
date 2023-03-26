@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+
 	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdateUser(user types.UpdateRequest) error {
+func UpdateUser(db *sql.DB, user types.UpdateRequest) error {
 	fmt.Println(user)
 	// Create a prepared statement to update the  user password into the database
 	stmt, err := db.Prepare("UPDATE `users` SET `Password` = ? WHERE `Username` = ?;")
@@ -36,6 +38,7 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Put Request", http.StatusBadRequest)
 		return
 	}
+	db := dbconnector.Dbconnector()
 
 	// Decode JSON request body into LoginRequest struct
 	var req types.UpdateRequest
@@ -67,7 +70,7 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//calling the Update function
-	if err := UpdateUser(req); err != nil {
+	if err := UpdateUser(db, req); err != nil {
 		http.Error(w, "Invalid  password", http.StatusUnauthorized)
 		return
 	}
