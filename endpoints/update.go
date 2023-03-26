@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+	dbconnector "github.com/dheerajsanjigo/Usermanagement/dbconnector"
 
-	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
+	types "github.com/dheerajsanjigo/Usermanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdateUser(db *sql.DB, user types.UpdateRequest) error {
+func UpdateUser(db *sql.DB, user types.User) error {
 	fmt.Println(user)
 	// Create a prepared statement to update the  user password into the database
 	stmt, err := db.Prepare("UPDATE `users` SET `Password` = ? WHERE `Username` = ?;")
@@ -41,7 +41,7 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := dbconnector.Dbconnector()
 	defer db.Close()
 	// Decode JSON request body into LoginRequest struct
-	var req types.UpdateRequest
+	var req types.User
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON request body", http.StatusBadRequest)
 		return
@@ -49,7 +49,7 @@ func UpdatePasswordHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check if user exists in database
 	var storedPassword string
-	err := db.QueryRow("SELECT password FROM users WHERE Username = ?", req.Username).Scan(&storedPassword)
+	err = db.QueryRow("SELECT password FROM users WHERE Username = ?", req.Username).Scan(&storedPassword)
 	if err == sql.ErrNoRows {
 		http.Error(w, "Invalid Username ", http.StatusUnauthorized)
 		return

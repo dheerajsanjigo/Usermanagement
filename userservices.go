@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	dbconnection "github.com/dheerajsanjigo/Usermanagement/dbconnector"
+	dbconnector "github.com/dheerajsanjigo/Usermanagement/dbconnector"
 	endpoints "github.com/dheerajsanjigo/Usermanagement/endpoints"
 )
 
@@ -12,7 +12,8 @@ var err error
 
 func main() {
 	//Create  the mysql connection
-	dbconnection.Dbconnector()
+	db, err := dbconnector.Dbconnector()
+	defer db.Close()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("called")

@@ -6,15 +6,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+	dbconnector "github.com/dheerajsanjigo/Usermanagement/dbconnector"
+	validators "github.com/dheerajsanjigo/Usermanagement/validators"
 
-	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
+	types "github.com/dheerajsanjigo/Usermanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var err error
 
-func createUser(db *sql.DB, user types.SignupRequest) error {
+func createUser(db *sql.DB, user types.User) error {
 	fmt.Println(user)
 	// Create a prepared statement to insert a new user into the database
 	stmt, err := db.Prepare("INSERT INTO users (Email, Password,Username,Fullname) VALUES (?, ?,?,?)")
@@ -41,8 +42,8 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	db, err := dbconnector.Dbconnector()
 	defer db.Close()
-	// Decode JSON request body into SignupRequest struct
-	var req types.SignupRequest
+	// Decode JSON request body into User struct
+	var req types.User
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON request body", http.StatusBadRequest)
 		return
@@ -53,8 +54,9 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Email == "" {
-		http.Error(w, "Email cannot be empty", http.StatusBadRequest)
+	val := validators.ValidateEmail(req.Email)
+	if val == false {
+		http.Error(w, "Invalid email Format", http.StatusBadRequest)
 		return
 
 	}

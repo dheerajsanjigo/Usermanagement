@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+	dbconnector "github.com/dheerajsanjigo/Usermanagement/dbconnector"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -41,7 +41,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check if user exists in database
 	var storedPassword string
-	err := db.QueryRow("SELECT password FROM users WHERE Username = ?", userName).Scan(&storedPassword)
+	err = db.QueryRow("SELECT password FROM users WHERE Username = ?", userName).Scan(&storedPassword)
 	if err == sql.ErrNoRows {
 		http.Error(w, "Invalid Username ", http.StatusUnauthorized)
 		return
