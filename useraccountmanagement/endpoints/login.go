@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+
 	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -17,7 +19,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Post Request", http.StatusBadRequest)
 		return
 	}
-
+	db := dbconnector.Dbconnector()
 	// Decode JSON request body into LoginRequest struct
 	var req types.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

@@ -49,7 +49,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := DeleteUser(userName); err != nil {
+	if err := DeleteUser(db, userName); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -6,14 +6,15 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dheerajsanjigo/Usermanagement/dbconnector"
+
 	types "github.com/dheerajsanjigo/Usermanagement/useraccountmanagement/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
 var err error
 
-func createUser(user types.SignupRequest) error {
+func createUser(db *sql.DB, user types.SignupRequest) error {
 	fmt.Println(user)
 	// Create a prepared statement to insert a new user into the database
 	stmt, err := db.Prepare("INSERT INTO users (Email, Password,Username,Fullname) VALUES (?, ?,?,?)")
@@ -38,7 +39,7 @@ func SSignupHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Post Request", http.StatusBadRequest)
 		return
 	}
-
+	db := dbconnector.Dbconnector()
 	// Decode JSON request body into SignupRequest struct
 	var req types.SignupRequest
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -63,7 +64,7 @@ func SSignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call the createUser function to insert the new user into the database
-	if err := createUser(req); err != nil {
+	if err := createUser(db, req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
